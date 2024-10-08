@@ -1,15 +1,18 @@
-use k8s_deviceplugin::v1beta1::registration_client::RegistrationClient;
+use hyper_util::rt::TokioIo;
 use k8s_deviceplugin::v1beta1;
-use tokio::net::UnixStream;
+use k8s_deviceplugin::v1beta1::registration_client::RegistrationClient;
 use std::convert::TryFrom;
+use tokio::net::UnixStream;
 use tonic::transport::{Endpoint, Uri};
 use tower::service_fn;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let channel = Endpoint::try_from("http://[::]:50051")?
-        .connect_with_connector(service_fn(|_: Uri| {
+        .connect_with_connector(service_fn(|_: Uri| async {
             UnixStream::connect(v1beta1::KUBELET_SOCKET)
+                .await
+                .map(TokioIo::new)
         }))
         .await?;
     let mut client = RegistrationClient::new(channel);

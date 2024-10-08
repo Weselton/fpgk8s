@@ -2,11 +2,12 @@
 name = "plugin"
 version = "0.1.0"
 authors = ["hasheddan <georgedanielmangum@gmail.com>"]
-edition = "2018"
+edition = "2021"
 
 [dependencies]
 k8s-deviceplugin = { path = "../k8s-deviceplugin" }
-tonic = "0.7"
-prost = "0.10"
-tokio = { version = "1.0", features = ["macros", "rt-multi-thread"] }
-tower = { version = "0.4" }
+tonic = "0.12"
+prost = "0.13"
+tokio = { version = "1", features = ["full"] }
+tower = { version = "0.5" }
+hyper-util = { version = "0.1" }
